@@ -20,7 +20,7 @@ export default async function Home() {
         ) : 
         <>
           {result.posts.map(post => (
-            <ThreadCard key={post._id} id={post._id} currentUserId={user?.id || ''} parentId={post.parentId} content={post.text} author={post.author} community={post.communityId} createdAt={post.createdAt} comments={post.Children} />
+            <ThreadCard key={post._id} id={post._id} currentUserId={user?.id || ''} parentId={post.parentId} content={post.text} author={post.author} community={post.community} createdAt={post.createdAt} comments={post.Children} />
        
           ))}
         </>

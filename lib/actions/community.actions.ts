@@ -18,7 +18,7 @@ export async function createCommunity(
 ) {
   try {
     connectToDB();
-
+    console.log("checked2")
     // Find the user with the provided unique id
     const user = await User.findOne({ id: createdById });
 
@@ -27,11 +27,11 @@ export async function createCommunity(
     }
 
     const newCommunity = new Community({
-      id,
-      name,
-      username,
-      image,
-      bio,
+      id: id,
+      name: name,
+      username: username,
+      image: image,
+      bio: bio,
       createdBy: user._id, // Use the mongoose ID of the user
     });
 
@@ -40,7 +40,7 @@ export async function createCommunity(
     // Update User model
     user.communities.push(createdCommunity._id);
     await user.save();
-
+  
     return createdCommunity;
   } catch (error) {
     // Handle any errors

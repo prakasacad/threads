@@ -18,6 +18,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { updateUser } from "@/lib/actions/user.actions";
 import {ThreadValidation} from '@/lib/validations/thread'
 import {createThread} from '@/lib/actions/thread.actions'
+import {useOrganization} from '@clerk/nextjs'
+
 interface Props {
     user: {
         id: string;
@@ -29,9 +31,10 @@ interface Props {
     }; 
     btnTitle: string;
 }
-import Image from 'next/image'
+
 
 export default function PostThread({userId}: {userId: string}) {
+    const {organization} = useOrganization()
     const router = useRouter();
     const pathname = usePathname();
     const form = useForm({
@@ -43,10 +46,11 @@ export default function PostThread({userId}: {userId: string}) {
     })
 
     const onSubmit = async(values: z.infer<typeof ThreadValidation>) => {
+        {console.log(organization)}
         await createThread({
             text: values.thread,
             author: userId,
-            communityId: null,
+            communityId: organization ? organization.id : null,
             path: pathname})
 
         router.push("/")

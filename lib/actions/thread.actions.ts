@@ -4,6 +4,7 @@ import Thread from '../models/thread.model'
 import User from '../models/user.model'
 import { revalidatePath } from "next/cache"
 import { skip } from "node:test"
+import Community from "../models/community.model"
 
 interface Params {
     text: string,
@@ -13,18 +14,30 @@ interface Params {
 }
 
 export async function createThread({text, author, communityId, path}: Params) {
+    console.log("hmm", communityId)
     connectToDB()
 
+    const communityIdObject = await Community.findOne(
+        {id: communityId},
+    )
+    
     const createdThread = await Thread.create({
         text,
         author,
-        community: null,
+        community: communityId,
 
     })
-
+    console.log("checked")
     await User.findByIdAndUpdate(author, {
         $push: {threads: createdThread._id}
     })
+
+    if (communityIdObject) {
+        await Community.findByIdAndUpdate(communityIdObject, {
+            $push: {threads: createdThread._id}
+        })
+       
+    }
 
     revalidatePath(path)
 
