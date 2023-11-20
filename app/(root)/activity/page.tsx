@@ -1,3 +1,5 @@
+
+
 import {currentUser} from '@clerk/nextjs'
 import { redirect } from 'next/navigation';
 import {fetchUser, getActiviity } from '@/lib/actions/user.actions'

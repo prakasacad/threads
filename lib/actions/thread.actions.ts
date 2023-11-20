@@ -13,38 +13,73 @@ interface Params {
     path: string
 }
 
-export async function createThread({text, author, communityId, path}: Params) {
-    console.log("hmm", communityId)
-    connectToDB()
+// export async function createThread({text, author, communityId, path}: Params) {
+//     console.log("hmm", communityId)
+//     connectToDB()
+
+//     const communityIdObject = await Community.findOne(
+//         {id: communityId},
+//     )
+    
+//     const createdThread = await Thread.create({
+//         text,
+//         author,
+//         community: communityId,
+
+//     })
+//     console.log("checked")
+//     await User.findByIdAndUpdate(author, {
+//         $push: {threads: createdThread._id}
+//     })
+
+//     if (communityIdObject) {
+//         await Community.findByIdAndUpdate(communityIdObject, {
+//             $push: {threads: createdThread._id}
+//         })
+       
+//     }
+
+//     revalidatePath(path)
+
+
+
+// }
+
+
+export async function createThread({ text, author, communityId, path }: Params
+) {
+  try {
+    connectToDB();
 
     const communityIdObject = await Community.findOne(
-        {id: communityId},
-    )
-    
-    const createdThread = await Thread.create({
-        text,
-        author,
-        community: communityId,
+      { id: communityId },
+      { _id: 1 }
+    );
 
-    })
-    console.log("checked")
+    const createdThread = await Thread.create({
+      text,
+      author,
+      community: communityIdObject, // Assign communityId if provided, or leave it null for personal account
+      likedBy: null
+    });
+
+    // Update User model
     await User.findByIdAndUpdate(author, {
-        $push: {threads: createdThread._id}
-    })
+      $push: { threads: createdThread._id },
+    });
 
     if (communityIdObject) {
-        await Community.findByIdAndUpdate(communityIdObject, {
-            $push: {threads: createdThread._id}
-        })
-       
+      // Update Community model
+      await Community.findByIdAndUpdate(communityIdObject, {
+        $push: { threads: createdThread._id },
+      });
     }
 
-    revalidatePath(path)
-
-
-
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to create thread: ${error.message}`);
+  }
 }
-
 
 export async function fetchPosts({pageNumber = 1, pageSize=20}) {
     connectToDB()
@@ -54,7 +89,9 @@ export async function fetchPosts({pageNumber = 1, pageSize=20}) {
     .sort({createdAt: 'desc'})
     .skip(skipAmount)
     .limit(pageSize)
-    .populate({path: 'author', model: User})
+    .populate([
+      {path: 'author', model: User},
+      {path: 'community', model: Community}])
     .populate({
         path: 'Children', 
         populate:  {
@@ -143,5 +180,22 @@ export async function addComment(threadId: string, commentText: string, userId: 
 
     } catch(error: any) {
         throw new Error('Error adding comment')
+    }
+}
+
+
+export async function fetchLike(id:string, currentUserId:string) {
+    connectToDB()
+    try {
+        const thread = await Thread.findById(id)
+        const a = thread.likedBy?.find((e:string) => e === currentUserId) 
+
+        return a ? true : false
+
+        
+
+    } catch (error:any) {
+        throw new Error('hmm error', error.message)
+
     }
 }

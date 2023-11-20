@@ -21,7 +21,7 @@
     "mongodb": "^6.2.0",
     "mongoose": "^7.6.3",
     "mongose": "^0.0.2-security",
-    "next": "13.5.5",
+    "next": "^14.0.3",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.47.0",
