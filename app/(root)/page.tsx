@@ -9,7 +9,7 @@ export default async function Home() {
 
   const user = await currentUser()
 
-  const result = await fetchPosts({pageNumber: 1, pageSize: 2})
+  const result = await fetchPosts({pageNumber: 1, pageSize: 20})
   
   return (
     <section> 
@@ -20,7 +20,7 @@ export default async function Home() {
         ) : 
         <>
           {result.posts.map(post => (
-            <ThreadCard key={post.id} id={post._id} currentUserId={user?.id || ''} parentId={post.parentId} content={post.text} author={post.author} community={post.community} createdAt={post.createdAt} comments={post.Children} />
+            <ThreadCard key={post.id} id={post._id} currentUserId={user?.id || ''} parentId={post.parentId} content={post.text} author={post.author} community={post.community} createdAt={post.createdAt} comments={post.Children} likedBy={JSON.parse(JSON.stringify(post.likedBy))} />
        
           ))}
         </>

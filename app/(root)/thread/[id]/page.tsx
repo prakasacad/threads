@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import ThreadCard from '@/components/cards/ThreadCard'
 import { currentUser } from '@clerk/nextjs'
 import { fetchUser } from '@/lib/actions/user.actions'
@@ -13,6 +13,7 @@ const Page = async ({params}: {params: {id: string}})  => {
     const post = await fetchThreadById(params.id)
 
     return (
+    
         <section className="relative">
             <div>
             <ThreadCard key={post._id} id={post._id} currentUserId={user?.id || ''} parentId={post.parentId} content={post.text} author={post.author} community={post.communityId} createdAt={post.createdAt} comments={post.Children} />

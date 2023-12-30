@@ -60,7 +60,6 @@ export async function createThread({ text, author, communityId, path }: Params
       text,
       author,
       community: communityIdObject, // Assign communityId if provided, or leave it null for personal account
-      likedBy: null
     });
 
     // Update User model
@@ -91,7 +90,10 @@ export async function fetchPosts({pageNumber = 1, pageSize=20}) {
     .limit(pageSize)
     .populate([
       {path: 'author', model: User},
-      {path: 'community', model: Community}])
+      {path: 'community', model: Community}, 
+      {path: 'likedBy', model: User}
+    
+    ])
     .populate({
         path: 'Children', 
         populate:  {
@@ -184,13 +186,56 @@ export async function addComment(threadId: string, commentText: string, userId: 
 }
 
 
+
+export async function likeThisThread(id:string, currentUserId:string) {
+  connectToDB()
+  try {
+      const thread = await Thread.findById(id)
+      .populate(
+        {
+          path: 'likedBy'
+        }
+      )
+
+      const user = await User.findOne({ id: currentUserId })
+
+      if (!(thread.likedBy.find((element:any) => element._id.toString() === user._id.toString() ))) {
+        thread.likedBy.push(user._id)
+        await thread.save()
+        console.log("adfa")
+      } else {
+
+        await Thread.findOneAndUpdate(
+          { _id: id },
+          { $pull: { likedBy: user._id } },
+          { new: true }
+          
+        );
+        console.log('deleted')
+      }
+
+      
+      
+
+  } catch (error:any) {
+      throw new Error('hmm error', error.message)
+
+  }
+}
+
+
 export async function fetchLike(id:string, currentUserId:string) {
     connectToDB()
     try {
         const thread = await Thread.findById(id)
-        const a = thread.likedBy?.find((e:string) => e === currentUserId) 
+          .populate({
+            path: 'likedBy'
+          })
+          
+        const isLiked = thread.likedBy?.find((e:any) => e._id.toString() === currentUserId.toString()) !== undefined
+        const numberOfLikes = thread.likedBy.length
 
-        return a ? true : false
+        return { isLiked, numberOfLikes }
 
         
 
