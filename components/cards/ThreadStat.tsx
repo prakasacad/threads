@@ -23,12 +23,6 @@ const ThreadStat = ({ id, currentUserId, likedBy }: { id: string, currentUserId:
         
     }
 
-
-    
-
-
-
-
     return (
         <div className="flex gap-3.5">
             <div className='text-light-2' onClick={() => console.log('haha')}>{likeData.numberOfLikes}</div>

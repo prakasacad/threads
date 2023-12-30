@@ -64,7 +64,7 @@ export default async function ThreadCard({
                         </Link>
                         <p className="mt-2 text-small-regular text-light-2">{content}</p>
                         <div className={`${isComment && 'mb-10'} mt-5 flex flex-col gap-3`}>
-                           <ThreadStat id={id.toString()} currentUserId={currentUserId} likedBy={likedBy}/>
+                           <ThreadStat id={id} currentUserId={currentUserId} likedBy={likedBy}/>
 
                             {isComment && comments.length >0 && (
                                 <Link href={`/thread/${id}`}>
