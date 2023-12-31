@@ -16,7 +16,7 @@ const Page = async ({params}: {params: {id: string}})  => {
     
         <section className="relative">
             <div>
-            <ThreadCard key={post._id} id={post._id} currentUserId={user?.id || ''} parentId={post.parentId} content={post.text} author={post.author} community={post.communityId} createdAt={post.createdAt} comments={post.Children} />
+            <ThreadCard key={post._id} id={post._id} currentUserId={user?.id || ''} parentId={post.parentId} content={post.text} author={post.author} community={post.communityId} createdAt={post.createdAt} comments={post.Children} likedBy={JSON.parse(JSON.stringify(post.likedBy))}/>
             </div>
             <div className='mt-7'>
                 <Comment postId={post._id} currentUserImg={userInfo?.image} currentUserId={userInfo._id} />
@@ -24,7 +24,7 @@ const Page = async ({params}: {params: {id: string}})  => {
 
             <div className='mt-10'>
             {post.Children.map((comment:any) => (
-                <ThreadCard key={comment._id} id={comment._id} currentUserId={user?.id || ''} parentId={comment.parentId} content={comment.text} author={comment.author} community={comment.communityId} createdAt={comment.createdAt} comments={comment.Children} isComment/>
+                <ThreadCard key={comment._id} id={comment._id} currentUserId={user?.id || ''} parentId={comment.parentId} content={comment.text} author={comment.author} community={comment.communityId} createdAt={comment.createdAt} comments={comment.Children} isComment likedBy={JSON.parse(JSON.stringify(post.likedBy))}/>
             ) )}
 
             </div>

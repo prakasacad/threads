@@ -69,7 +69,7 @@ export async function updateUser({
         .populate({
           path: 'threads',
           model: Thread,
-          populate: {
+          populate: [{
             path: 'Children',
             model: Thread,
             populate: {
@@ -77,9 +77,14 @@ export async function updateUser({
               model: User,
               select: 'name image id'
             }
+          }, 
+          {
+            path: 'likedBy',
+            model: User
           }
-          
-        })
+        ]
+        }, 
+      )
         return threads
 
     } catch(error:any) {

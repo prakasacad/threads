@@ -118,11 +118,13 @@ export async function fetchThreadById(postId: string) {
     connectToDB()
     try {
         const post = await Thread.findOne({_id: postId})
-        .populate({
+        .populate([{
             path: 'author',
             model: User,
             select: '_id id name image'
-        })
+        }, 
+        {path: 'likedBy', model: User}
+        ])
         .populate({
             path: 'Children',
             populate: [
